@@ -1,19 +1,24 @@
 import React from 'react'
-import { sql } from '@vercel/postgres';
+import ProductCard from '../components/shop/ProductCard'
 
 const TestsPage = async () => {
-    let data = await sql`SELECT * FROM pg_catalog.pg_tables;`;
-
     return (
-        <div>
-            <p>Tests</p>
-            <ul>
-                {data.rows.map((row, index) => (
-                    <li key={index}>{JSON.stringify(row)}</li>
-                ))}
-            </ul>
-        </div>
+        <>
+            <ProductCard />
+        </>
     )
 }
 
 export default TestsPage
+
+/*
+    let data = await sql`SELECT * FROM pg_catalog.pg_tables;`;
+    <div>
+        <p>Tests</p>
+        <ul>
+            {data.rows.map((row, index) => (
+                <li key={index}>{JSON.stringify(row)}</li>
+            ))}
+        </ul>
+    </div>
+*/
