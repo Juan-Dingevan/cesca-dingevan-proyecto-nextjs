@@ -14,7 +14,7 @@ const TestsPage = async () => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3">
             {coffees.map(
-                (coffee) => <ProductCard product={coffee} />
+                (coffee) => <ProductCard key={coffee.id} product={coffee} />
             )}
         </div>
     )
