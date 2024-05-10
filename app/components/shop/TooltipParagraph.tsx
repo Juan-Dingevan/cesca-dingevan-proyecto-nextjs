@@ -3,8 +3,10 @@ export default function ProductCard({text, tooltip, style}: {text: string, toolt
         <div className="flex relative">
             <p className={"peer " + style}>{text}</p>
             <span className={`
+                hidden
+                peer-hover:block
                 peer-hover:opacity-100
-                transition-opacity
+                transition-all
                 duration-500
                 bg-slate-700
                 px-1
@@ -15,7 +17,6 @@ export default function ProductCard({text, tooltip, style}: {text: string, toolt
                 left-4
                 -top-3 
                 opacity-0
-                hoverme:opacity-0
                 m-4 
                 mx-auto
                 whitespace-nowrap

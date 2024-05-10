@@ -1,11 +1,22 @@
 import React from 'react'
 import ProductCard from '../components/shop/ProductCard'
+import { sql } from '@vercel/postgres';
+import { unstable_noStore as noStore } from 'next/cache';
 
 const TestsPage = async () => {
+    noStore();
+
+    const data = await sql<Product>`SELECT * FROM ventanita.products`;
+    const coffees = data.rows;
+
+    coffees.map((coffee) => console.log(coffee))
+
     return (
-        <>
-            <ProductCard />
-        </>
+        <div className="grid grid-cols-1 md:grid-cols-3">
+            {coffees.map(
+                (coffee) => <ProductCard product={coffee} />
+            )}
+        </div>
     )
 }
 
