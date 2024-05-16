@@ -2,8 +2,19 @@ import React from 'react'
 import ProductCard from '../components/shop/ProductCard'
 import { sql } from '@vercel/postgres';
 import { unstable_noStore as noStore } from 'next/cache';
+import ShopNavBar from '../components/shop/ShopNavBar';
 
 const TestsPage = async () => {
+    return (
+        <div className="grid grid-cols-1">
+            <ShopNavBar />
+        </div>
+    )
+}
+
+export default TestsPage
+
+/*
     noStore();
 
     const data = await sql<Product>`SELECT * FROM ventanita.products`;
@@ -18,18 +29,4 @@ const TestsPage = async () => {
             )}
         </div>
     )
-}
-
-export default TestsPage
-
-/*
-    let data = await sql`SELECT * FROM pg_catalog.pg_tables;`;
-    <div>
-        <p>Tests</p>
-        <ul>
-            {data.rows.map((row, index) => (
-                <li key={index}>{JSON.stringify(row)}</li>
-            ))}
-        </ul>
-    </div>
 */
