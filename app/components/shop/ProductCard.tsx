@@ -36,8 +36,8 @@ export default function ProductCard({product} : {product: Product}) {
             <Image 
                 src={url}
                 alt={alt}
-                width={150}
-                height={150}
+                width={120}
+                height={120}
                 draggable="false"
                 className={`
                     border-slate-700

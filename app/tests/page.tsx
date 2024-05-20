@@ -1,18 +1,32 @@
 import React from 'react'
-import ProductCard from '../components/shop/ProductCard'
-import { sql } from '@vercel/postgres';
-import { unstable_noStore as noStore } from 'next/cache';
 import ShopNavBar from '../components/shop/ShopNavBar';
+import ProductDisplay from '../components/shop/ProductDisplay';
 
-const TestsPage = async () => {
+export default async function TestPage({
+    searchParams,
+  }: {
+    searchParams?: {
+      query?: string;
+      categories?: string;
+      page?: string;
+    };
+  })
+{
+    const query = searchParams?.query || '';
+    const categories = searchParams?.categories || '';
+    const currentPage = Number(searchParams?.page) || 1;
+
     return (
-        <div className="grid grid-cols-1">
-            <ShopNavBar />
+        <div className="flex flex-col md:grid md:grid-cols-5 ">
+            <div className='md:col-span-1'>
+                <ShopNavBar />
+            </div>
+            <div className='md:col-span-4'>
+                <ProductDisplay query={query} categories={categories} currentPage={currentPage}/>
+            </div>
         </div>
     )
 }
-
-export default TestsPage
 
 /*
     noStore();
