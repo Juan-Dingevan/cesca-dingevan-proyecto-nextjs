@@ -21,7 +21,7 @@ export default async function ProductDisplay({
     const totalPages = await numberOfPagesNeededForProducts(query, categories)
 
     return (
-        <div className='py-4 flex-col'>
+        <div className='py-4 flex flex-col justify-between h-screen'>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10 p-10">
                 {products.map(
                     (product) => <ProductCard key={product.id} product={product} />

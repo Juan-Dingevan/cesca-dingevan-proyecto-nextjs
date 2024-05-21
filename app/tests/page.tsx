@@ -18,7 +18,7 @@ export default async function TestPage({
     const currentPage = Number(searchParams?.page) || 1;
 
     return (
-        <div className="flex flex-col md:grid md:grid-cols-12 h-full">
+        <div className="flex flex-col md:grid md:grid-cols-12 h-screen">
             <div className='order-1 md:col-span-2 md:order-1'>
                 <ShopNavBar />
             </div>
