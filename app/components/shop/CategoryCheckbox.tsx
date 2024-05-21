@@ -63,7 +63,7 @@ export default function CategoryCheckbox({
             <p className="text-md text-slate-700 font-bold">{text}</p>
             <input 
                 type="checkbox" 
-                defaultChecked={false}
+                defaultChecked={searchParams.get('categories')?.toString().includes(category)}
                 onChange={(e) => handleChange()}
             />
         </label>

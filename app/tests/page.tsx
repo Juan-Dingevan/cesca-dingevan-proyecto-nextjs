@@ -1,6 +1,7 @@
 import React from 'react'
 import ShopNavBar from '../components/shop/ShopNavBar';
 import ProductDisplay from '../components/shop/ProductDisplay';
+import ShoppingCart from '../components/shop/ShoppingCart';
 
 export default async function TestPage({
     searchParams,
@@ -17,12 +18,15 @@ export default async function TestPage({
     const currentPage = Number(searchParams?.page) || 1;
 
     return (
-        <div className="flex flex-col md:grid md:grid-cols-5 ">
-            <div className='md:col-span-1'>
+        <div className="flex flex-col md:grid md:grid-cols-12 h-full">
+            <div className='order-1 md:col-span-2 md:order-1'>
                 <ShopNavBar />
             </div>
-            <div className='md:col-span-4'>
+            <div className='order-3 md:col-span-9 md:order-2'>
                 <ProductDisplay query={query} categories={categories} currentPage={currentPage}/>
+            </div>
+            <div className='order-2 md:col-span-1 md:order-3'>
+                <ShoppingCart />
             </div>
         </div>
     )

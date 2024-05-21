@@ -24,7 +24,6 @@ export default function ProductCard({product} : {product: Product}) {
     
     return (
         <div className={`
-            m-8
             rounded-3xl
             bg-slate-200
             p-8
@@ -32,6 +31,7 @@ export default function ProductCard({product} : {product: Product}) {
             justify-items-center
             items-center
             shadow-xl
+            h-full
         `}>
             <Image 
                 src={url}
@@ -73,7 +73,7 @@ export default function ProductCard({product} : {product: Product}) {
                         Precio: ${(product.price / 100).toFixed(2)}
                     </p>    
                 </div>
-                <div className="py-1">
+                <div className="py-2">
                     <QuantityForm/>
                 </div>
             </div>
