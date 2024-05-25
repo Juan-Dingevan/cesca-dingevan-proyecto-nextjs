@@ -174,3 +174,72 @@ export async function numberOfPagesNeededForProducts(
 
     return totalPages;
 }
+export async function fetchFilteredProductsTable(
+    query: string,
+    currentPage: number,
+){
+    const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+    /*
+        Hay 3 posibilidades:
+            - categories no especificado                       -> no retornamos nada: si no hay categorias, nunca habra matches
+            - name no especificado, categories especificado    -> retornamos todo lo que haga match con categories
+            - name especificado, categories especificado       -> retornamos todo lo que haga match con ambas
+    */
+
+
+    let q = ""
+
+    try {
+        if(!query) {
+            // Why do we use sql.query() instead of the "normal"
+            // back-tick string notation? Well, because that one
+            // didn't work!
+            // Se explanation in https://stackoverflow.com/questions/76862758/dynamically-building-a-sql-query-postgres-and-javascript
+
+
+            const products = await sql.query(`
+            SELECT 
+                * 
+            FROM 
+                ventanita.products 
+            `);
+
+            return products.rows
+        }
+
+        if(query) {
+            q = `
+                SELECT 
+                    * 
+                FROM 
+                    ventanita.products 
+                WHERE 
+                    (
+                        ventanita.products.name ILIKE ${`%${query}%`} OR
+                        ventanita.products.description ILIKE ${`%${query}%`}
+                    ) 
+                LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+            `;
+
+            const products = await sql.query(`
+                SELECT 
+                    * 
+                FROM 
+                    ventanita.products 
+                WHERE 
+                    (
+                        ventanita.products.name ILIKE ${`'%${query}%'`} OR
+                        ventanita.products.description ILIKE ${`'%${query}%'`}
+                    )
+                LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+            `);
+            return products.rows    
+        }
+
+        return []
+
+    } catch (error) {
+        console.error('Database Error:', error);
+        throw new Error('Failed to fetch products - ' + q);
+    }
+}

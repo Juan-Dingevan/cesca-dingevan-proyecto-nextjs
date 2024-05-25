@@ -87,3 +87,12 @@ export type State = {
     revalidatePath('/admin');
     redirect('/admin');
   }
+  export async function deleteProduct(id: string) {
+    //throw new Error('Failed to Delete Invoice');
+    try {
+        await sql`DELETE FROM ventanita.products WHERE id = ${id}`;
+        revalidatePath('/admin');
+    }catch (error) {
+        return { message: 'Database Error: Failed to Delete Invoice.' };
+      }
+  }
