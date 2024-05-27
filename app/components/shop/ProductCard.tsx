@@ -1,6 +1,7 @@
 import Image from "next/image";
 import TooltipParagraph from "./TooltipParagraph";
 import QuantityForm from "./QuantityForm";
+import { Product } from "@/app/lib/types";
 
 export default function ProductCard({product} : {product: Product}) {
     let url = ""
@@ -74,7 +75,7 @@ export default function ProductCard({product} : {product: Product}) {
                     </p>    
                 </div>
                 <div className="py-2">
-                    <QuantityForm/>
+                    <QuantityForm product={product}/>
                 </div>
             </div>
         </div>
