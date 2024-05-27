@@ -81,7 +81,6 @@ export type State = {
         message: 'Database Error: Failed to Create Invoice.',
       };
     }
-    console.log("here4");
    
     // Revalidate the cache for the invoices page and redirect the user.
     revalidatePath('/admin');
@@ -96,3 +95,52 @@ export type State = {
         return { message: 'Database Error: Failed to Delete Invoice.' };
       }
   }
+
+  const UpdateProduct = FormSchema.omit({ id: true, date_added: true });
+
+  export async function updateProduct(
+    id: string,
+    prevState: State,
+    formData: FormData,
+  ) {
+    const validatedFields = UpdateProduct.safeParse({
+      name: formData.get('name'),
+      description: formData.get('description'),
+      price: formData.get('price'),
+      category: formData.get('category'),
+      vegan: Boolean(formData.get('vegan')),
+      gluten_free: Boolean(formData.get('gluten_free')),
+      img_link: formData.get('img_link'),
+    });
+   
+    if (!validatedFields.success) {
+      return {
+        errors: validatedFields.error.flatten().fieldErrors,
+        message: 'Missing Fields. Failed to Update Invoice.',
+      };
+    }
+   
+    const { name, description, price, category, vegan, gluten_free, img_link } = validatedFields.data;
+    const priceInCents = price * 100;
+
+    console.log(`
+    UPDATE ventanita.products
+    SET name = ${name}, description = ${description}, price = ${priceInCents}, category = ${category}, vegan = ${vegan}, gluten_free = ${gluten_free}, img_link = ${img_link} 
+    WHERE id = ${id}
+  `);
+   
+    try {
+      await sql`
+        UPDATE ventanita.products
+        SET name = ${name}, description = ${description}, price = ${priceInCents}, category = ${category}, vegan = ${vegan}, gluten_free = ${gluten_free}, img_link = ${img_link} 
+        WHERE id = ${id}
+      `;
+    } catch (error) {
+      return { message: 'Database Error: Failed to Update Invoice.' };
+    }
+   
+    revalidatePath('/admin');
+    redirect('/admin');
+  }
+ 
+

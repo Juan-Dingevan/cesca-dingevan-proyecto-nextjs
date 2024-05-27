@@ -1,9 +1,35 @@
 import React from 'react'
 
-const EditPage = () => {
-  return (
-    <div>Edit</div>
-  )
-}
+import EditProductForm from '@/app/components/abm/EditForm';
+import Breadcrumbs from '@/app/components/abm/Breadcrumbs';
+import { fetchProductById } from '@/app/lib/data';
+import { notFound } from 'next/navigation';
 
-export default EditPage
+
+
+export default async function Page({ params }: { params: { id: string } }) {
+    const id = params.id;
+    const [product] = await Promise.all([
+        fetchProductById(id),
+      ]);
+
+      if (!product) {
+        notFound();
+      }
+
+  return (
+    <main>
+      <Breadcrumbs
+        breadcrumbs={[
+          { label: 'Products', href: '/admin' },
+          {
+            label: 'Edit Product',
+            href: `/admin/${id}/edit`,
+            active: true,
+          },
+        ]}
+      />
+      <EditProductForm product={product} />
+    </main>
+  );
+}

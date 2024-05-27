@@ -1,4 +1,7 @@
 import { sql } from '@vercel/postgres';
+import { ProductForm } from './types';
+import { unstable_noStore as noStore } from 'next/cache';
+
 
 /*
     The CATEGORY field in the ventanita.products 
@@ -243,3 +246,34 @@ export async function fetchFilteredProductsTable(
         throw new Error('Failed to fetch products - ' + q);
     }
 }
+export async function fetchProductById(id: string) {
+    noStore();
+    try {
+      const data = await sql<ProductForm>`
+        SELECT
+          ventanita.products.id,
+          ventanita.products.name,
+          ventanita.products.description,
+          ventanita.products.price,
+          ventanita.products.category,
+          ventanita.products.vegan,
+          ventanita.products.gluten_free,
+          ventanita.products.img_link
+        FROM ventanita.products
+        WHERE ventanita.products.id = ${id};
+      `;
+      
+  
+      const product = data.rows.map((product) => ({
+        ...product,
+        // Convert amount from cents to dollars
+        price: product.price / 100,
+      }));
+  
+      console.log(product[0]); // Invoice is an empty array []
+      return product[0];
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch invoice.');
+    }
+  }
