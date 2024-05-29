@@ -277,3 +277,33 @@ export async function fetchProductById(id: string) {
       throw new Error('Failed to fetch invoice.');
     }
   }
+  export async function fetchProductsPages(query: string) {
+    noStore();
+    try {
+        if(!query) {
+            const count = await sql` SELECT 
+            COUNT(*) 
+        FROM 
+            ventanita.products `;
+            const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+            return totalPages;
+        }else{
+            const count = await sql` SELECT 
+            COUNT(*)
+        FROM
+            ventanita.products
+        WHERE
+            (
+                ventanita.products.name ILIKE ${`%${query}%`} OR
+                ventanita.products.description ILIKE ${`%${query}%`}
+            )`;
+            const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
+            return totalPages;
+        }
+    } catch (error) {
+      console.error('Database Error:', error);
+      throw new Error('Failed to fetch total number of invoices.');
+    }
+  }
+
+ 

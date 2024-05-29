@@ -5,6 +5,9 @@ import Search from '@/app/components/abm/SearchProduct'
 import { Suspense } from 'react';
 import { ProductsTableSkeleton } from '@/app/components/skeletons';
 import ProductsTable from '@/app/components/abm/Table';
+import Pagination from '@/app/components/abm/Pagination';
+import { fetchProductsPages } from '@/app/lib/data';
+
 
 
 
@@ -19,7 +22,7 @@ export default async function AdminPage({
 }){
   const query = searchParams?.query || '';
   const currentPage = Number(searchParams?.page) || 1;
-  //const totalPages = await fetchInvoicesPages(query);
+  const totalPages = await fetchProductsPages(query);
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
@@ -32,8 +35,9 @@ export default async function AdminPage({
         {<Suspense key={query + currentPage} fallback={<ProductsTableSkeleton />}> 
         <ProductsTable query={query} currentPage={currentPage} />
   </Suspense> }
- 
-
+  <div className="mt-5 flex w-full justify-center">
+         <Pagination totalPages={totalPages} /> *
+      </div>
     </div>
   
   
