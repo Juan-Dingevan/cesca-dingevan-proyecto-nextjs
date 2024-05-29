@@ -1,6 +1,6 @@
 import ShopNavBar from '../components/shop/ShopNavBar';
 import ProductDisplay from '../components/shop/ProductDisplay';
-import ShoppingCart from '../components/cart/ShoppingCart';
+import ShoppingCartDisplay from '../components/cart/ShoppingCartDisplay';
 
 export default async function TestPage({
     searchParams,

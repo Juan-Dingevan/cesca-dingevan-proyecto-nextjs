@@ -1,21 +1,6 @@
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
-import { Product } from "./types"
-
-// https://github.com/ljaviertovar/shopping-cart-nextjs-zustand/blob/main/src/stores/useCartStore.ts
-
-interface CartProduct {
-    quantity: number;
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    vegan: boolean;
-    gluten_free: boolean;
-    date_added: Date;
-    img_link: string;
-}
+import { CartProduct, Product } from "./types"
 
 interface State {
 	cart: CartProduct[]
@@ -26,12 +11,25 @@ interface State {
 interface Actions {
 	addToCart: (Item: CartProduct) => void
 	removeFromCart: (Item: CartProduct) => void
+	updateProduct: (Item: CartProduct) => void
 }
 
 const INITIAL_STATE: State = {
 	cart: [],
 	totalItems: 0,
 	totalPrice: 0,
+}
+
+// does using these functions instead of a numeric formula
+// tailored to adding / updating / deleting an item add 
+// needless iteration? Yes. Is it also way cleaner? Yes.
+
+function addTotalItems(cart: CartProduct[]): number {
+    return cart.reduce((total, product) => total + product.quantity, 0);
+}
+
+function addTotalPrice(cart: CartProduct[]): number {
+    return cart.reduce((total, product) => total + (product.quantity * product.price), 0);
 }
 
 export const useCartStore = create(
@@ -47,28 +45,52 @@ export const useCartStore = create(
 
 				if (cartItem) {
 					const updatedCart = cart.map(item =>
-						item.id === product.id ? { ...item, quantity: (item.quantity as unknown as number) + 1 } : item
+						item.id === product.id ? { ...item, quantity: (item.quantity as unknown as number) + product.quantity } : item
 					)
 					set(state => ({
 						cart: updatedCart,
-						totalItems: state.totalItems + 1,
-						totalPrice: state.totalPrice + product.price,
+						totalItems: addTotalItems(updatedCart),
+						totalPrice: addTotalPrice(updatedCart)
 					}))
 				} else {
-					const updatedCart = [...cart, { ...product, quantity: 1 }]
+					const updatedCart = [...cart, { ...product, quantity: product.quantity }]
 
 					set(state => ({
 						cart: updatedCart,
-						totalItems: state.totalItems + 1,
-						totalPrice: state.totalPrice + product.price,
+						totalItems: addTotalItems(updatedCart),
+						totalPrice: addTotalPrice(updatedCart),
 					}))
 				}
 			},
+
+			updateProduct: (product: CartProduct) => {
+				const cart = get().cart
+				const cartItem = cart.find(item => item.id === product.id)
+
+				if(cartItem) {
+					const updatedCart = cart.map(item =>
+						item.id === product.id ? { ...item, quantity: product.quantity } : item
+					)
+
+					set(state => ({
+						cart: updatedCart,
+						totalItems: addTotalItems(updatedCart),
+						totalPrice: addTotalPrice(updatedCart),
+					}))
+				}
+				
+				//No else: if the item isn't in the cart, there's nothing
+				//to update and we simply ignore the call.
+			},
+
 			removeFromCart: (product: CartProduct) => {
+				const cart = get().cart
+				const updatedCart = cart.filter(item => item.id !== product.id)
+				
 				set(state => ({
-					cart: state.cart.filter(item => item.id !== product.id),
-					totalItems: state.totalItems - 1,
-					totalPrice: state.totalPrice - product.price,
+					cart: updatedCart,
+					totalItems: addTotalItems(updatedCart),
+					totalPrice: addTotalPrice(updatedCart),
 				}))
 			},
 		}),

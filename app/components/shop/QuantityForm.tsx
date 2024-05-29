@@ -1,23 +1,10 @@
 "use client"
 
-import { Product } from "@/app/lib/types";
+import { CartProduct, Product } from "@/app/lib/types";
 import { useCartStore } from "@/app/lib/useCartStore";
 import { useState } from "react";
 
 export default function ProductCard({product} : {product: Product}) {
-    interface CartProduct {
-        quantity: number;
-        id: string;
-        name: string;
-        description: string;
-        price: number;
-        category: string;
-        vegan: boolean;
-        gluten_free: boolean;
-        date_added: Date;
-        img_link: string;
-    }
-
     const [quantity, setQuantity] = useState(1)
     
     const add = () => {setQuantity(quantity + 1)}

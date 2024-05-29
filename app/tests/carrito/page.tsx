@@ -1,12 +1,14 @@
 "use client"
 
-import ShoppingCart from '@/app/components/cart/ShoppingCart'
+import CartDetails from '@/app/components/cart/CartDetails'
+import ShoppingCartDisplay from '@/app/components/cart/ShoppingCartDisplay'
 import React from 'react'
 
 const CarritoPage = () => {
   return (
-    <div>
-      <ShoppingCart />
+    <div className="p-10 flex flex-col md:flex-row min-h-screen max-h-screen">
+      <ShoppingCartDisplay />
+      <CartDetails />
     </div>
   )
 }
