@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react';
 import Link from 'next/link';
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -25,7 +27,7 @@ export function CreateProduct() {
     );
   }
   
-  export function DeleteProduct({ id }: { id: string }) {
+ /* export function DeleteProduct({ id }: { id: string }) {
     const deleteInvoiceWithId = deleteProduct.bind(null, id);
     return (
       <form action={deleteInvoiceWithId}>
@@ -35,5 +37,24 @@ export function CreateProduct() {
         </button>
         </form>
     );
+  }*/
+  export function DeleteProduct({ id }: { id: string }) {
+    const handleDelete = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const confirmed = window.confirm('¿Está seguro de que desea eliminar este producto?');
+      if (confirmed) {
+        await deleteProduct(id);
+      }
+    };
+  
+    return (
+      <form onSubmit={handleDelete}>
+        <button type="submit" className="rounded-md border p-2 hover:bg-gray-100">
+          <span className="sr-only">Delete</span>
+          <TrashIcon className="w-5" />
+        </button>
+      </form>
+    );
   }
+  
   
