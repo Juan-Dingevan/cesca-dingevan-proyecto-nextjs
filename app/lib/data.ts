@@ -205,6 +205,7 @@ export async function fetchFilteredProductsTable(
                 * 
             FROM 
                 ventanita.products 
+            LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
             `);
 
             return products.rows
