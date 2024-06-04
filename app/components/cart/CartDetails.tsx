@@ -1,8 +1,10 @@
 "use client"
 
+import { payment } from "@/app/lib/actions";
 import { useCartStore } from "@/app/lib/useCartStore";
 import useFromStore from "@/app/lib/useFromStore";
 import { useRouter } from 'next/navigation'
+import { useState } from "react";
 
 interface ButtonProps {
     text: string,
@@ -40,8 +42,10 @@ function VentanitaButton(Props: ButtonProps) {
 
 export default function CartDetails() {
     const router = useRouter()
+    const cart  = useFromStore(useCartStore, state => state.cart)
     const items = useFromStore(useCartStore, state => state.totalItems)
     const price = useFromStore(useCartStore, state => state.totalPrice)
+    const [name, setName] = useState('')
     
     return(
         <div 
@@ -83,7 +87,7 @@ export default function CartDetails() {
                 <input 
                     type="text" 
                     id="name" 
-                    onChange={() => {}}
+                    onChange={(e) => {setName(e.target.value)}}
                     placeholder={""} 
                     className="font-bold text-black w-full px-3 py-2 rounded-xl border-solid border border-lime-500"
                 />
@@ -91,12 +95,19 @@ export default function CartDetails() {
 
             <div className="flex flex-col mt-4">
                 <div className="mb-2 flex flex-col">
-                    <VentanitaButton text={"Finalizar"} hoverText={"Estas a momentos de disfrutar tu café"} action={() => {}}/>
+                    <VentanitaButton 
+                        text={"Finalizar y pagar"}
+                        hoverText={"Estas a momentos de disfrutar tu café"}
+                        action={() => {payment(cart!, name)}}
+                    />
                 </div>
-                <VentanitaButton 
-                    text={"Volver a la tienda"} 
-                    hoverText={"¿Te quedaste con ganas de algo?"} 
-                    action={() => router.back()}/>
+                <div className="mb-2 flex flex-col">
+                    <VentanitaButton 
+                        text={"Volver a la tienda"} 
+                        hoverText={"¿Te quedaste con ganas de algo?"} 
+                        action={() => router.back()}
+                    />
+                </div>
             </div>
         </div>
     );

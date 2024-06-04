@@ -1,10 +1,13 @@
 'use server';
 
-
+import {MercadoPagoConfig, Preference} from "mercadopago";
 import { z } from 'zod';
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { CartProduct } from './types';
+import { signIn } from '@/auth';
+import { AuthError } from "next-auth";
 
 
 //observar tipos de datos (gluten_free, vegan)
@@ -43,7 +46,7 @@ export type State = {
   };
 
   //export async function createInvoice(prevState: State, formData: FormData) {
-    export async function createProduct(prevState: State, formData: FormData) {
+export async function createProduct(prevState: State, formData: FormData) {
     // Validate form using Zod
     const validatedFields = CreateProduct.safeParse({
       name: formData.get('name'),
@@ -85,20 +88,20 @@ export type State = {
     // Revalidate the cache for the invoices page and redirect the user.
     revalidatePath('/admin');
     redirect('/admin');
-  }
-  export async function deleteProduct(id: string) {
+}
+export async function deleteProduct(id: string) {
     //throw new Error('Failed to Delete Invoice');
     try {
         await sql`DELETE FROM ventanita.products WHERE id = ${id}`;
         revalidatePath('/admin');
-    }catch (error) {
+    } catch (error) {
         return { message: 'Database Error: Failed to Delete Invoice.' };
-      }
-  }
+    }
+}
 
-  const UpdateProduct = FormSchema.omit({ id: true, date_added: true });
+const UpdateProduct = FormSchema.omit({ id: true, date_added: true });
 
-  export async function updateProduct(
+export async function updateProduct(
     id: string,
     prevState: State,
     formData: FormData,
@@ -141,6 +144,59 @@ export type State = {
    
     revalidatePath('/admin');
     redirect('/admin');
-  }
- 
+}
 
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
+}
+
+
+export async function payment(
+  cart: CartProduct[],
+  name: string
+) {
+
+  const client = new MercadoPagoConfig({accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN!});
+
+  const cartItemsFormatted = cart.map(item => ({
+    id: item.id,
+    title: item.name,
+    quantity: item.quantity,
+    unit_price: item.price / 100
+  }));
+
+  // Armamos el preference de mp
+  // lanzamos el sandbox
+  // y despues vemos que hacemos para que el usuario vuelva a
+  // donde estaba antes 
+  // ver https://github.com/goncy/donancy/blob/main/src/app/page.tsx
+  // y https://www.youtube.com/watch?v=LhqDshOTipo
+
+  try {
+    const preference = await new Preference(client).create({
+      body: {
+        items: cartItemsFormatted
+      },
+    });
+    console.log(preference)
+    redirect(preference.sandbox_init_point!);
+  } catch (error) {
+    console.log(error)
+    return { message: 'Mercadopago Error: Failed to create preference.' };
+  } 
+}

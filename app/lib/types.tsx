@@ -23,6 +23,12 @@ export interface CartProduct {
     img_link: string;
 }
 
+export interface User {
+    id: string;
+    email: string;
+    password: string;
+}
+
 export type ProductForm = {
     id: string;
     name: string;

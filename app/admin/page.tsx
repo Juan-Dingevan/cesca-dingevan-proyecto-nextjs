@@ -7,9 +7,8 @@ import { ProductsTableSkeleton } from '@/app/components/skeletons';
 import ProductsTable from '@/app/components/abm/Table';
 import Pagination from '@/app/components/abm/Pagination';
 import { fetchProductsPages } from '@/app/lib/data';
-
-
-
+import { signOut } from '@/auth';
+import { PowerIcon } from '@heroicons/react/24/solid';
 
  
 export default async function AdminPage({
@@ -34,12 +33,24 @@ export default async function AdminPage({
         </div>
         {<Suspense key={query + currentPage} fallback={<ProductsTableSkeleton />}> 
         <ProductsTable query={query} currentPage={currentPage} />
-  </Suspense> }
-  <div className="mt-5 flex w-full justify-center">
+        </Suspense> }
+        <div className="mt-5 flex w-full justify-center">
          <Pagination totalPages={totalPages} /> *
       </div>
+
+      <form
+          action={async () => {
+            'use server';
+            await signOut();
+          }}
+        >
+          <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+            <PowerIcon className="w-6" />
+            <div className="hidden md:block">Sign Out</div>
+          </button>
+        </form>
+
     </div>
-  
   
   );
 }

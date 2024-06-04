@@ -7,11 +7,6 @@ import CartCard from "./CartCard";
 export default function ShoppingCartDisplay() {
     const cart = useFromStore(useCartStore, state => state.cart)
 
-	let total = 0
-	if (cart) {
-		total = cart.reduce((acc, product) => acc + product.price * (product.quantity as number), 0)
-	}
-
     return(
         <div 
 			className={`
@@ -31,9 +26,15 @@ export default function ShoppingCartDisplay() {
 			`}
 		>
             
-			{cart?.map(product => (
+			{cart && cart.length > 0 && cart?.map(product => (
 				<CartCard key={product.id} product={product}/>
 			))}
+
+			{cart && cart.length == 0 && 
+				<p className="text-xl font-bold text-lime-700 px-20 py-40">
+					El carrito está vacio
+				</p>
+			}
 			
         </div>
     )
