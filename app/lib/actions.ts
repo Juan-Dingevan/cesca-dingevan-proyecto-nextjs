@@ -119,11 +119,13 @@ async function uploadToCloudinary(img: File) {
 
     if (done)
       break;
-
+    
+    // @ts-ignore
     imageDataU8.push(...value);
   }
 
   // Creamos el buffer de la imagen a partir de los bytes
+  // @ts-ignore
   const byteArrayBuffer = Buffer.from(imageDataU8, 'binary');
 
   // Hacemos la llamada a la API de cloudinary
@@ -140,7 +142,7 @@ async function uploadToCloudinary(img: File) {
 
   // Finalmente, obtenemos el link de la imagen como la
   // URL devuelta por el pedido a la API de cloudinary
-  const img_link = uploadResult.url;
+  const img_link = (uploadResult as any).url;
 
   return img_link;
 }
