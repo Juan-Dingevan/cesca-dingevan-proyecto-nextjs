@@ -8,6 +8,7 @@ import { redirect } from 'next/navigation';
 import { CartProduct } from './types';
 import { signIn } from '@/auth';
 import { AuthError } from "next-auth";
+import cloudinary from "./cloudinary";
 
 
 //observar tipos de datos (gluten_free, vegan)
@@ -30,7 +31,7 @@ const FormSchema = z.object({
 });
  
 //const CreateProduct = FormSchema.omit({ id: true, date_added: true });
-const CreateProduct = FormSchema.omit({ id: true, date_added: true });
+const CreateProduct = FormSchema.omit({ id: true, date_added: true, img_link: true});
 
 export type State = {
     errors?: {
@@ -43,52 +44,107 @@ export type State = {
       //img_link?: string[];
     };
     message?: string | null;
-  };
+};
 
-  //export async function createInvoice(prevState: State, formData: FormData) {
 export async function createProduct(prevState: State, formData: FormData) {
-    // Validate form using Zod
-    const validatedFields = CreateProduct.safeParse({
-      name: formData.get('name'),
-      description: formData.get('description'),
-      price: formData.get('price'),
-      category: formData.get('category'),
-      vegan: Boolean(formData.get('vegan')),
-      gluten_free: Boolean(formData.get('gluten_free')),
-      img_link: formData.get('img_link'),
-    });
-    
-   
-    // If form validation fails, return errors early. Otherwise, continue.
-    if (!validatedFields.success) {
-      return {
-        errors: validatedFields.error.flatten().fieldErrors,
-        message: 'Missing Fields. Failed to Create Product.',
-      };
-    }
-   
-    // Prepare data for insertion into the database
-    const { name, description, price, category, vegan, gluten_free, img_link } = validatedFields.data;
-    const priceInCents = price * 100;
-    const date = new Date().toISOString().split('T')[0];
-   
-    // Insert data into the database
-    try {
+  // Validate form using Zod
+  const validatedFields = CreateProduct.safeParse({
+    name: formData.get('name'),
+    description: formData.get('description'),
+    price: formData.get('price'),
+    category: formData.get('category'),
+    vegan: Boolean(formData.get('vegan')),
+    gluten_free: Boolean(formData.get('gluten_free')),
+    //img_link: formData.get('img_link'),
+  });
+
+  // If form validation fails, return errors early. Otherwise, continue.
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Create Product.',
+    };
+  }
+  
+  // Prepare data for insertion into the database
+  const { name, description, price, category, vegan, gluten_free } = validatedFields.data;
+  const priceInCents = price * 100;
+  const date = new Date().toISOString().split('T')[0];
+
+  const img = formData.get('picture') as File
+  let img_link = ""
+
+  if(img) {
+    img_link = await uploadToCloudinary(img);
+  } else {
+    img_link = formData.get('img_link') as string
+  }
+
+  // Insert data into the database
+  try {
     await sql`
         INSERT INTO ventanita.products (name, description, price, category, vegan, gluten_free, date_added, img_link)
         VALUES (${name}, ${description}, ${priceInCents}, ${category}, ${vegan}, ${gluten_free}, ${date}, ${img_link})
       `;
-    } catch (error) {
-      // If a database error occurs, return a more specific error.
-      return {
-        message: 'Database Error: Failed to Create Invoice.',
-      };
-    }
-   
-    // Revalidate the cache for the invoices page and redirect the user.
-    revalidatePath('/admin');
-    redirect('/admin');
+  } catch (error) {
+    // If a database error occurs, return a more specific error.
+    console.log(error)
+    return {
+      message: 'Database Error: Failed to Create Product.',
+    };
+  }
+
+  // Revalidate the cache for the invoices page and redirect the user.
+  revalidatePath('/admin');
+  redirect('/admin');
 }
+
+async function uploadToCloudinary(img: File) {
+  // No es el código más limpio del mundo, le
+  // atribuyo parte de la culpa a JavaScript.
+  // Lo bueno es que funciona :)
+
+  // Obtenemos el reader de la imagen como tal
+  // No podemos usar el FileReader() porque estamos
+  // en Node, y no en un navegador.
+  const imageReader = img.stream().getReader();
+  
+  // Creamos un arreglo de bytes (unisgned ints de 8 bits)
+  // Sobre el cual copiaremos los bytes de la imagen
+  const imageDataU8: number[] = [];
+  
+  // Poblamos el arreglo
+  while (true) {
+    const { done, value } = await imageReader.read();
+
+    if (done)
+      break;
+
+    imageDataU8.push(...value);
+  }
+
+  // Creamos el buffer de la imagen a partir de los bytes
+  const byteArrayBuffer = Buffer.from(imageDataU8, 'binary');
+
+  // Hacemos la llamada a la API de cloudinary
+  // Las llamadas con buffer de datos (en vez de links de
+  // imagenes) son asincrónicas, así que le hacemos un wrap
+  // en una promesa, y la esperamos
+  const uploadResult = await new Promise((resolve) => {
+    cloudinary.uploader.upload_stream((error, uploadResult) => {
+      return resolve(uploadResult);
+    }).end(byteArrayBuffer);
+  });
+
+  //console.log(uploadResult)
+
+  // Finalmente, obtenemos el link de la imagen como la
+  // URL devuelta por el pedido a la API de cloudinary
+  const img_link = uploadResult.url;
+
+  return img_link;
+}
+
 export async function deleteProduct(id: string) {
     //throw new Error('Failed to Delete Invoice');
     try {
@@ -165,7 +221,6 @@ export async function authenticate(
   }
 }
 
-
 export async function payment(
   cart: CartProduct[],
   name: string
@@ -187,16 +242,31 @@ export async function payment(
   // ver https://github.com/goncy/donancy/blob/main/src/app/page.tsx
   // y https://www.youtube.com/watch?v=LhqDshOTipo
 
+  let redirectPath: string | null = null
+
   try {
     const preference = await new Preference(client).create({
       body: {
+        payment_methods: {
+          excluded_payment_methods: [],
+          excluded_payment_types: [
+            {
+              id: "ticket"
+            }
+          ],
+          installments: 1
+        },
+        
         items: cartItemsFormatted
       },
     });
-    console.log(preference)
-    redirect(preference.sandbox_init_point!);
+    
+    redirectPath = preference.sandbox_init_point!
   } catch (error) {
     console.log(error)
     return { message: 'Mercadopago Error: Failed to create preference.' };
-  } 
+  }
+
+  if(redirectPath)
+    redirect(redirectPath);
 }

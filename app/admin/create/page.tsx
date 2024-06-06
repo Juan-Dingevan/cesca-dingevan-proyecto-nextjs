@@ -20,7 +20,7 @@ export default async function CreatePage() {
     </main>
   );*/
   return (
-    <main>
+    <main className="p-4 md:px-20 md:py-10">
       <Form/>
     </main>
   )
