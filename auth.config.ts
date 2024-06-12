@@ -15,7 +15,7 @@ export const authConfig = {
         
         return false; // Redirect unauthenticated users to login page
       }else if (isOnLogin && isLoggedIn) {
-        return Response.redirect(new URL('/admin', nextUrl)); //it works?
+         return Response.redirect( new URL('/admin', nextUrl)); //it works?
       }
       return true;
     },

@@ -1,12 +1,11 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
-import { authenticate } from '@/app/lib/actions';
-import { Button } from '../components/abm/CreateButton';
+
+import LoginForm from '../components/LoginForm'
 
 
 export default function LoginPage() {
-    const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+    //const [errorMessage, dispatch] = useFormState(authenticate, undefined);
 
     /*
         PENDIENTES:
@@ -16,7 +15,7 @@ export default function LoginPage() {
     */
 
     return (
-        <form className="flex flex-col" action={dispatch}>
+       /* <form className="flex flex-col" action={dispatch}>
             <label>
                 <p>email</p>
                 <input type="email" name="email"/>
@@ -26,16 +25,21 @@ export default function LoginPage() {
                 <input type="password" name="password"/>
             </label>
             <LoginButton />
-        </form>
+        </form>}
+        */
+        <main className="flex items-center justify-center min-h-screen">
+        <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
+            <div className="flex h-20 w-full items-end rounded-lg bg-lime-600 p-3 md:h-36">
+                <div className="w-32 text-white md:w-36">
+                    <p className="text-2xl font-bold text-white md:text-4xl">
+                    La Ventanita
+                    </p>
+                </div>
+            </div>
+             <LoginForm />
+        </div>
+    </main>
+
     )
 }
 
-function LoginButton() {
-    const { pending } = useFormStatus();
-   
-    return (
-      <Button className="mt-4 w-full" aria-disabled={pending}>
-        Entrar
-      </Button>
-    );
-  }
