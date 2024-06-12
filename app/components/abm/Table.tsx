@@ -3,6 +3,16 @@ import { UpdateProduct, DeleteProduct } from '@/app/components/abm/Buttons';
 import { formatDateToLocal, formatCurrency } from '@/app/lib/utils';
 import { fetchFilteredProductsTable } from '@/app/lib/data';
 
+
+function truncateDescription(description: string): string {
+  const words = description.split(' ');
+  if (words.length <= 5) {
+    return description;
+  }
+  return words.slice(0, 5).join(' ') + '...';
+}
+
+
 export default async function ProductsTable({
   query,
   currentPage,
@@ -34,7 +44,7 @@ export default async function ProductsTable({
                       />
                       <p>{product.name}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{product.description}</p>
+                    <p className="text-sm text-gray-500">{truncateDescription(product.description)}</p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
@@ -56,16 +66,16 @@ export default async function ProductsTable({
             <thead className="rounded-lg text-left text-sm font-normal">
               <tr>
                 <th scope="col" className="px-4 py-5 font-medium sm:pl-6">
-                  Product
+                  Producto
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Description
+                  Descripción
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Price
+                  Precio
                 </th>
                 <th scope="col" className="px-3 py-5 font-medium">
-                  Date added
+                  Fecha que fue agregado
                 </th>
                 <th scope="col" className="relative py-3 pl-6 pr-3">
                   <span className="sr-only">Edit</span>
@@ -91,7 +101,7 @@ export default async function ProductsTable({
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {product.description}
+                    {truncateDescription(product.description)}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatCurrency(product.price)}

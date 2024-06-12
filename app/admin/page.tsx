@@ -28,7 +28,7 @@ export default async function AdminPage({
         <h1 className="text-2xl font-bold">Productos</h1>
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-         <Search placeholder="Search products..." />
+         <Search placeholder="Buscar productos..." />
         <CreateProduct/>
         </div>
         {<Suspense key={query + currentPage} fallback={<ProductsTableSkeleton />}> 
