@@ -12,6 +12,7 @@ interface Actions {
 	addToCart: (Item: CartProduct) => void
 	removeFromCart: (Item: CartProduct) => void
 	updateProduct: (Item: CartProduct) => void
+	reset: () => void
 }
 
 const INITIAL_STATE: State = {
@@ -93,6 +94,10 @@ export const useCartStore = create(
 					totalPrice: addTotalPrice(updatedCart),
 				}))
 			},
+
+			reset: () => {
+				set(state => INITIAL_STATE)
+			}
 		}),
 		{
 			name: "cart-storage",

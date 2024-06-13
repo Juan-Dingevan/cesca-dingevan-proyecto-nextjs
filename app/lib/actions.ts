@@ -9,6 +9,7 @@ import { CartProduct } from './types';
 import { signIn } from '@/auth';
 import { AuthError } from "next-auth";
 import cloudinary from "./cloudinary";
+import { fail } from "assert";
 
 
 //observar tipos de datos (gluten_free, vegan)
@@ -245,6 +246,17 @@ export async function payment(
   // y https://www.youtube.com/watch?v=LhqDshOTipo
 
   let redirectPath: string | null = null
+  let rootPath = ""
+
+  if(process.env.NODE_ENV === 'development') {
+    rootPath = "localhost:3000"
+  } else {
+    rootPath = "https://la-ventanita-cafe.vercel.app"
+  }
+
+  const successPath = rootPath + "/pagos/exito"
+  const failurePath = rootPath + "/pagos/error"
+  const pendingPath = rootPath + "/pagos/pendiente"
 
   try {
     const preference = await new Preference(client).create({
@@ -258,8 +270,16 @@ export async function payment(
           ],
           installments: 1
         },
-        
-        items: cartItemsFormatted
+
+        items: cartItemsFormatted,
+
+        back_urls: {
+          "success": successPath,
+          "failure": failurePath,
+          "pending": pendingPath
+        },
+
+        auto_return: "approved"
       },
     });
     
