@@ -1,4 +1,4 @@
-import ShopNavBar from '../components/shop/ShopNavBar';
+import ShopNavBar from '../components/shop/navigation/ShopNavBar';
 import ProductDisplay from '../components/shop/ProductDisplay';
 import ShoppingCartDisplay from '../components/cart/ShoppingCartDisplay';
 
