@@ -81,17 +81,25 @@ export default function Form() {
         </div>
 
         <div className="input-data">
-          <label htmlFor='category' className="flex flex-col p-2">
-            <p className='text-lg'>Categoría:</p>
-            <input 
-              id="category"
-              name="category"
-              type="text" 
-              placeholder="filter_drink" 
-              className="input-text"
-            />
-          </label>
-        </div>
+        <label htmlFor='category' className="flex flex-col p-2">
+          <p className='text-lg'>Categoría:</p>
+          <select 
+            id="category"
+            name="category"
+            className="input-select"
+          >
+            <option value="espresso_drink">Espresso Drink</option>
+            <option value="filter_drink">Filter Drink</option>
+            <option value="iced_drink">Iced Drink</option>
+            <option value="milk_drink">Milk Drink</option>
+            <option value="tea">Tea</option>
+            <option value="cake">Cake</option>
+            <option value="pastry">Pastry</option>
+            <option value="sandwich">Sandwich</option>
+            <option value="cookie">Cookie</option>
+          </select>
+        </label>
+      </div>
 
         <div className="input-data boolean flex justify-between p-2">
           <span className='text-lg'>Vegan</span>

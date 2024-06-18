@@ -53,13 +53,23 @@ export default function EditProductForm({
         <div className="underline"></div>
       </div>
       <div className="input-data">
-        <label>Categoria   </label>
-        <input 
-        id="category"
-        name="category"
-        type="text" 
-        defaultValue={product.category}
-        className="input-text"/>
+        <label htmlFor="category">Categoría</label>
+        <select 
+          id="category"
+          name="category"
+          defaultValue={product.category}
+          className="input-select"
+        >
+          <option value="espresso_drink">Espresso Drink</option>
+          <option value="filter_drink">Filter Drink</option>
+          <option value="iced_drink">Iced Drink</option>
+          <option value="milk_drink">Milk Drink</option>
+          <option value="tea">Tea</option>
+          <option value="cake">Cake</option>
+          <option value="pastry">Pastry</option>
+          <option value="sandwich">Sandwich</option>
+          <option value="cookie">Cookie</option>
+        </select>
         <div className="underline"></div>
       </div>
       <div className="input-data boolean flex items-center">
