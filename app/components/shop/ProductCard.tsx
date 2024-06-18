@@ -22,6 +22,12 @@ export default function ProductCard({product} : {product: Product}) {
         url = product.img_link
         alt = "Foto de " + product.name
     }
+
+    let desc = product.description
+    const lengthLimit = 100
+    if(desc.length > lengthLimit) {
+        desc = desc.slice(0, lengthLimit-3) + "..."
+    }
     
     return (
         <div className={`
@@ -29,54 +35,57 @@ export default function ProductCard({product} : {product: Product}) {
             bg-slate-200
             p-8
             grid
+            grid-rows-[auto, auto, 1fr, auto, auto]
+            gap-2
             justify-items-center
-            items-center
             shadow-xl
-            h-full
         `}>
-            <Image 
-                src={url}
-                alt={alt}
-                width={120}
-                height={120}
-                draggable="false"
-                className={`
-                    border-slate-700
-                    border-2
-                    border-solid
-                    rounded-3xl 
-                    pt-1
-                `}
-            />
-            <div>
-                <p className="text-2xl font-bold text-black py-1">
-                    {name}
+            <div className="row-span-1 w-32 h-32 relative">
+                <Image 
+                    src={url}
+                    alt={alt}
+                    layout="fill" // This ensures the image fills the container
+                    objectFit="cover" // This makes sure the image covers the container, maintaining aspect ratio
+                    draggable="false"
+                    className={`
+                        border-slate-700
+                        border-2
+                        border-solid
+                        rounded-3xl
+                    `}
+                />
+            </div>
+
+            <p className="text-2xl font-bold text-black row-span-1">
+                {name}
+            </p>
+
+            <div className="row-span-1 flex flex-row">
+                <p className="font-bold text-sm text-gray-600 align-top overflow-hidden text-ellipsis h-20">
+                    {desc}
                 </p>
-                <div className="flex py-1 flex-row">
-                    <p className="font-bold text-gray-600 ">
-                        {product.description}
-                    </p>
-                    <div>
-                        {product.vegan && <TooltipParagraph 
-                            text={"V"}
-                            tooltip={"Producto vegano."}
-                            style={"font-bold italic text-green-500"}
-                        />}
-                        {product.gluten_free && <TooltipParagraph 
-                            text={"C"}
-                            tooltip={"Producto sin TACC."}
-                            style={"font-bold italic text-amber-500"}
-                        />}
-                    </div>
+                <div className="flex flex-col">
+                    {product.vegan && <TooltipParagraph 
+                        text={"V"}
+                        tooltip={"Producto vegano."}
+                        style={"font-bold italic text-green-500"}
+                    />}
+                    {product.gluten_free && <TooltipParagraph 
+                        text={"C"}
+                        tooltip={"Producto sin TACC."}
+                        style={"font-bold italic text-amber-500"}
+                    />}
                 </div>
-                <div>
-                    <p className="font-bold text-black py-1">
-                        Precio: ${(product.price / 100).toFixed(2)}
-                    </p>    
-                </div>
-                <div className="py-2">
-                    <QuantityForm product={product}/>
-                </div>
+            </div>
+
+            <div>
+                <p className="font-bold text-black row-span-1">
+                    Precio: ${(product.price / 100).toFixed(2)}
+                </p>    
+            </div>
+
+            <div className="row-span-1">
+                <QuantityForm product={product}/>
             </div>
         </div>
     );
