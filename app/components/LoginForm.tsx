@@ -9,15 +9,32 @@ import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from './abm/CreateButton';
 import { useFormState, useFormStatus } from 'react-dom';
 import { authenticate } from '@/app/lib/actions';
+import { useState, FormEvent } from 'react';
+import { Circles } from 'react-loader-spinner';
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new FormData(e.currentTarget);
+
+    try {
+      await authenticate(undefined, formData);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
   return (
-    <form action={dispatch} className="space-y-3">
+    <form onSubmit={handleLogin} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-      <h1 className="mb-3 text-2xl font-serif">
-        Por favor inicie sesión para continuar.
-      </h1>
+        <h1 className="mb-3 text-2xl font-serif">
+          Por favor inicie sesión para continuar.
+        </h1>
         <div className="w-full">
           <div>
             <label
@@ -59,31 +76,43 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <LoginButton />
+        <LoginButton loading={loading} />
         <div className="flex h-8 items-end space-x-1">
-        <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {errorMessage && (
-            <>
-              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-              <p className="text-sm text-red-500">{errorMessage}</p>
-            </>
-          )}
-        </div>
+          <div
+            className="flex h-8 items-end space-x-1"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {errorMessage && (
+              <>
+                <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+                <p className="text-sm text-red-500">{errorMessage}</p>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </form>
   );
 }
 
-function LoginButton() {
-  const { pending } = useFormStatus();
+function LoginButton({ loading }: { loading: boolean }) {
   return (
-    <Button className="mt-4 w-full" aria-disabled={pending}>
-    Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-  </Button>
+    <Button className="mt-4 w-full" aria-disabled={loading}>
+      {loading ? (
+        <Circles
+          height="25"
+          width="25"
+          color="#ffffff"
+          ariaLabel="loading-indicator"
+        />
+      ) : (
+        <>
+          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </>
+      )}
+    </Button>
   );
 }
+
+
