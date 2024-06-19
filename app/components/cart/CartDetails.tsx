@@ -10,10 +10,11 @@ interface ButtonProps {
     text: string,
     hoverText?: string,
     action: () => void
+    active?: boolean 
 } 
 
 function VentanitaButton(Props: ButtonProps) {
-    const {text, hoverText, action} = Props;
+    const {text, hoverText, action, active} = Props;
 
     const hoverMain = hoverText ? "md:group-hover:hidden transition-all duration-250" : ""
     const hoverAlt  = hoverText ? "hidden md:group-hover:block" : ""
@@ -31,8 +32,10 @@ function VentanitaButton(Props: ButtonProps) {
                 px-5 py-2 
                 text-center 
                 hover:transition-colors ease-in-out duration-500
+                disabled:bg-lime-800
             `}
             onClick={action}
+            disabled={!active}
         >
             <p className={hoverMain}>{text}</p>
             <p className={hoverAlt}>{hoverText}</p>
@@ -47,11 +50,14 @@ export default function CartDetails() {
     const price = useFromStore(useCartStore, state => state.totalPrice)
     const [name, setName] = useState('')
     
+    const success_hover_text = "Estas a momentos de disfrutar tu café"
+    const failure_hover_text = "¡Debes tener items en el carrito y haber ingresado tu nombre!"
+
     return(
         <div 
 			className={`
 				bg-slate-100 
-				h-full 
+                w-full 
 				p-8 
 				flex 
 				flex-col
@@ -76,7 +82,7 @@ export default function CartDetails() {
                 
                 <div className="text-xl text-grey-800 flex flex-row justify-between">
                     <p>Total General:</p>
-                    <p>${price ? (price / 100).toFixed(2) : "?"}</p>
+                    <p>${price ? (price / 100).toFixed(2) : "0.00"}</p>
                 </div>
             </div>
 
@@ -97,8 +103,9 @@ export default function CartDetails() {
                 <div className="mb-2 flex flex-col">
                     <VentanitaButton 
                         text={"Finalizar y pagar"}
-                        hoverText={"Estas a momentos de disfrutar tu café"}
+                        hoverText={name.length > 0 && items! > 0 ? success_hover_text : failure_hover_text}
                         action={() => {payment(cart!, name)}}
+                        active={name.length > 0 && items! > 0}
                     />
                 </div>
                 <div className="mb-2 flex flex-col">
@@ -106,6 +113,7 @@ export default function CartDetails() {
                         text={"Volver a la tienda"} 
                         hoverText={"¿Te quedaste con ganas de algo?"} 
                         action={() => router.back()}
+                        active={true}
                     />
                 </div>
             </div>

@@ -6,9 +6,13 @@ import React from 'react'
 
 const CarritoPage = () => {
   return (
-    <div className="p-10 flex flex-col md:flex-row min-h-screen max-h-screen">
-      <ShoppingCartDisplay />
-      <CartDetails />
+    <div className="p-10 grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-1 min-h-screen">
+      <div className="flex justify-center items-center">
+        <ShoppingCartDisplay />
+      </div>
+      <div className="">
+        <CartDetails />
+      </div>
     </div>
   )
 }
