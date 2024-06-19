@@ -12,7 +12,7 @@ export default function GoToCart() {
 
     return (
         <Link 
-            href={"/tests/carrito"}
+            href={"/tienda/carrito"}
             className={`
                 relative
                 flex 
