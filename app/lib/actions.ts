@@ -101,9 +101,7 @@ export async function createProduct(prevState: State, formData: FormData) {
 }
 
 async function uploadToCloudinary(img: File) {
-  // No es el código más limpio del mundo, le
-  // atribuyo parte de la culpa a JavaScript.
-  // Lo bueno es que funciona :)
+  // No es el código más limpio del mundo.
 
   // Obtenemos el reader de la imagen como tal
   // No podemos usar el FileReader() porque estamos
