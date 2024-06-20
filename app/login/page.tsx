@@ -1,7 +1,14 @@
-'use client';
 
 
 import LoginForm from '../components/LoginForm'
+
+import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'Log in | Admin | La Ventanita',
+};
+
+
 
 
 export default function LoginPage() {
@@ -15,18 +22,6 @@ export default function LoginPage() {
     */
 
     return (
-       /* <form className="flex flex-col" action={dispatch}>
-            <label>
-                <p>email</p>
-                <input type="email" name="email"/>
-            </label>
-            <label>
-                <p>contraseña</p>
-                <input type="password" name="password"/>
-            </label>
-            <LoginButton />
-        </form>}
-        */
         <main className="flex items-center justify-center min-h-screen">
         <div className="relative mx-auto flex w-full max-w-[400px] flex-col space-y-2.5 p-4 md:-mt-32">
             <div className="flex h-20 w-full items-end rounded-lg bg-lime-600 p-3 md:h-36">

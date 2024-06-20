@@ -9,6 +9,12 @@ import Pagination from '@/app/components/abm/Pagination';
 import { fetchProductsPages } from '@/app/lib/data';
 import { signOut } from '@/auth';
 import { PowerIcon } from '@heroicons/react/24/solid';
+import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'Admin | La Ventanita',
+};
+
 
  
 export default async function AdminPage({

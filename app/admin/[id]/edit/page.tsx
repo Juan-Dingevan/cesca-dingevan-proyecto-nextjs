@@ -4,6 +4,12 @@ import EditProductForm from '@/app/components/abm/EditForm';
 import Breadcrumbs from '@/app/components/abm/Breadcrumbs';
 import { fetchProductById } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'Editar Producto | Admin | La Ventanita',
+};
+
 
 
 

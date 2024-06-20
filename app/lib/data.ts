@@ -173,7 +173,6 @@ export async function numberOfPagesNeededForProducts(
     const numberOfProducts = await countFilteredProducts(query, categories)
     const totalPages = Math.ceil(Number(numberOfProducts) / ITEMS_PER_PAGE);
   
-    console.log("numberOfProducts = " + numberOfProducts)
 
     return totalPages;
 }
@@ -271,7 +270,6 @@ export async function fetchProductById(id: string) {
         price: product.price / 100,
       }));
   
-      console.log(product[0]); // Invoice is an empty array []
       return product[0];
     } catch (error) {
       console.error('Database Error:', error);

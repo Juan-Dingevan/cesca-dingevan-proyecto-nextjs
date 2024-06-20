@@ -2,6 +2,12 @@ import Image from "next/image";
 import LogoCard from "./components/welcome/LogoCard";
 import Quote from "./components/welcome/Quote";
 import LinkBar from "./components/welcome/LinkBar";
+import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'La Ventanita',
+};
+
 
 export default function Home() {
   return (

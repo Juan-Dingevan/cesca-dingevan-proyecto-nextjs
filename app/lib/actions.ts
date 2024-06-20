@@ -184,14 +184,6 @@ export async function updateProduct(
     gluten_free: Boolean(formData.get('gluten_free')),
   });
 
-  console.log("1")
-  console.log(formData.get('name'))
-  console.log(formData.get('description'))
-  console.log(formData.get('price'))
-  console.log(formData.get('category'))
-  console.log(formData.get('vegan'))
-  console.log(formData.get('gluten_free'))
-  
    
   if (!validatedFields.success) {
     return {
@@ -200,31 +192,20 @@ export async function updateProduct(
     };
   }
 
-  console.log("2")
   
   const { name, description, price, category, vegan, gluten_free} = validatedFields.data;
   const priceInCents = price * 100;
 
-  console.log("3")
 
   const img = formData.get('picture') as File
   let img_link = ""
 
-  console.log("4 - " + img.name)
 
   if(img) {
     img_link = await uploadToCloudinary(img);
   } else {
     img_link = formData.get('img_link') as string
   }
-
-  console.log("5 - " + img_link)
-
-  console.log(`
-    UPDATE ventanita.products
-    SET name = ${name}, description = ${description}, price = ${priceInCents}, category = ${category}, vegan = ${vegan}, gluten_free = ${gluten_free}, img_link = ${img_link} 
-    WHERE id = ${id}
-  `);
    
   try {
     await sql`
