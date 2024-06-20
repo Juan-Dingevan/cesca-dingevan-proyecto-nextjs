@@ -103,15 +103,21 @@ export async function createProduct(prevState: State, formData: FormData) {
 async function uploadToCloudinary(img: File) {
   // No es el código más limpio del mundo.
 
+  console.log("1")
+
   // Obtenemos el reader de la imagen como tal
   // No podemos usar el FileReader() porque estamos
   // en Node, y no en un navegador.
   const imageReader = img.stream().getReader();
   
+  console.log("2")
+
   // Creamos un arreglo de bytes (unisgned ints de 8 bits)
   // Sobre el cual copiaremos los bytes de la imagen
   const imageDataU8: number[] = [];
   
+  console.log("3")
+
   // Poblamos el arreglo
   while (true) {
     const { done, value } = await imageReader.read();
@@ -123,9 +129,13 @@ async function uploadToCloudinary(img: File) {
     imageDataU8.push(...value);
   }
 
+  console.log("4")
+
   // Creamos el buffer de la imagen a partir de los bytes
   // @ts-ignore
   const byteArrayBuffer = Buffer.from(imageDataU8, 'binary');
+
+  console.log("5")
 
   // Hacemos la llamada a la API de cloudinary
   // Las llamadas con buffer de datos (en vez de links de
@@ -136,6 +146,8 @@ async function uploadToCloudinary(img: File) {
       return resolve(uploadResult);
     }).end(byteArrayBuffer);
   });
+
+  console.log("6")
 
   //console.log(uploadResult)
 
@@ -156,51 +168,76 @@ export async function deleteProduct(id: string) {
     }
 }
 
-const UpdateProduct = FormSchema.omit({ id: true, date_added: true });
+const UpdateProduct = FormSchema.omit({ id: true, date_added: true, img_link: true });
 
 export async function updateProduct(
-    id: string,
-    prevState: State,
-    formData: FormData,
-  ) {
-    const validatedFields = UpdateProduct.safeParse({
-      name: formData.get('name'),
-      description: formData.get('description'),
-      price: formData.get('price'),
-      category: formData.get('category'),
-      vegan: Boolean(formData.get('vegan')),
-      gluten_free: Boolean(formData.get('gluten_free')),
-      img_link: formData.get('img_link'),
-    });
-   
-    if (!validatedFields.success) {
-      return {
-        errors: validatedFields.error.flatten().fieldErrors,
-        message: 'Missing Fields. Failed to Update Invoice.',
-      };
-    }
-   
-    const { name, description, price, category, vegan, gluten_free, img_link } = validatedFields.data;
-    const priceInCents = price * 100;
+  id: string,
+  prevState: State,
+  formData: FormData,
+) {
+  const validatedFields = UpdateProduct.safeParse({
+    name: formData.get('name'),
+    description: formData.get('description'),
+    price: formData.get('price'),
+    category: formData.get('category'),
+    vegan: Boolean(formData.get('vegan')),
+    gluten_free: Boolean(formData.get('gluten_free')),
+  });
 
-    console.log(`
+  console.log("1")
+  console.log(formData.get('name'))
+  console.log(formData.get('description'))
+  console.log(formData.get('price'))
+  console.log(formData.get('category'))
+  console.log(formData.get('vegan'))
+  console.log(formData.get('gluten_free'))
+  
+   
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Missing Fields. Failed to Update Invoice.',
+    };
+  }
+
+  console.log("2")
+  
+  const { name, description, price, category, vegan, gluten_free} = validatedFields.data;
+  const priceInCents = price * 100;
+
+  console.log("3")
+
+  const img = formData.get('picture') as File
+  let img_link = ""
+
+  console.log("4 - " + img.name)
+
+  if(img) {
+    img_link = await uploadToCloudinary(img);
+  } else {
+    img_link = formData.get('img_link') as string
+  }
+
+  console.log("5 - " + img_link)
+
+  console.log(`
     UPDATE ventanita.products
     SET name = ${name}, description = ${description}, price = ${priceInCents}, category = ${category}, vegan = ${vegan}, gluten_free = ${gluten_free}, img_link = ${img_link} 
     WHERE id = ${id}
   `);
    
-    try {
-      await sql`
-        UPDATE ventanita.products
-        SET name = ${name}, description = ${description}, price = ${priceInCents}, category = ${category}, vegan = ${vegan}, gluten_free = ${gluten_free}, img_link = ${img_link} 
-        WHERE id = ${id}
-      `;
-    } catch (error) {
-      return { message: 'Database Error: Failed to Update Invoice.' };
-    }
+  try {
+    await sql`
+      UPDATE ventanita.products
+      SET name = ${name}, description = ${description}, price = ${priceInCents}, category = ${category}, vegan = ${vegan}, gluten_free = ${gluten_free}, img_link = ${img_link} 
+      WHERE id = ${id}
+    `;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Update Invoice.' };
+  }
    
-    revalidatePath('/admin');
-    redirect('/admin');
+  revalidatePath('/admin');
+  redirect('/admin');
 }
 
 export async function authenticate(
