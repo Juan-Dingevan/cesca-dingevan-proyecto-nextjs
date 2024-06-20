@@ -2,6 +2,7 @@ import SearchBar from './SearchBar';
 import DesktopForm from './DesktopForm';
 import MobileForm from './MobileForm';
 import GoToCart from './GoToCart';
+import HomeCard from './HomeCard';
 
 export default function ShopNavBar() {
     return (
@@ -18,6 +19,8 @@ export default function ShopNavBar() {
             flex-col
             justify-between
         `}>
+            <HomeCard />
+            
             <SearchBar />
             
             <div className="hidden md:block">
