@@ -140,6 +140,7 @@ export default function EditProductForm({
             placeholder="https://i.imgur.com/3IdJ0JR.jpeg" 
             className="input-text w-full border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none py-2"
           />
+          <small className="text-gray-500 mt-1">Solo se permiten enlaces de imgur y cloudinary.</small>
         </label>
       </div>
 

@@ -122,19 +122,21 @@ export default function Form() {
         </div>
 
         <div className="input-data">
-          <label htmlFor='category' className="flex flex-col p-2">
-            <p className={'text-lg' + (imageFile != null && "text-gray-500")}>Link a la imagen:</p>
-            <input 
-              id="img_link"
-              name="img_link"
-              type="url"
-              onChange={(e) => {setImageLink(e.target.value)}}
-              disabled={imageFile != null} 
-              placeholder="https://i.imgur.com/3IdJ0JR.jpeg" 
-              className="input-text w-full border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none py-2" 
-            />
-          </label>
-        </div>
+        <label htmlFor='img_link' className="flex flex-col p-2">
+          <p className={'text-lg' + (imageFile != null ? " text-gray-500" : "")}>Link a la imagen:</p>
+          <input 
+            id="img_link"
+            name="img_link"
+            type="url"
+            onChange={(e) => {setImageLink(e.target.value)}}
+            disabled={imageFile != null} 
+            placeholder="https://i.imgur.com/3IdJ0JR.jpeg" 
+            className="input-text w-full border-b-2 border-gray-300 focus:border-blue-500 focus:outline-none py-2" 
+          />
+          <small className="text-gray-500 mt-1">Solo se permiten enlaces de imgur y cloudinary.</small>
+        </label>
+      </div>
+
 
         <div className="flex flex-col p-2">
           <label htmlFor='picture' className='flex flex-col'>
