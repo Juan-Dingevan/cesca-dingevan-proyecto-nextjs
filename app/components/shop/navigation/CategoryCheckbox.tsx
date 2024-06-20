@@ -10,15 +10,17 @@ export default function CategoryCheckbox({
     text: string
     category: string
 }) {
-    // We init checked as false because, for some weird 
-    // probably js-related reason, the first time you
-    // call setChecked(!checked) it actually sets the 
-    // value to checked, NOT to !checked.
-    const [checked, setChecked] = useState(true);
-
     const searchParams = useSearchParams();
     const pathname = usePathname();
     const { replace } = useRouter();
+
+    const startingValue = searchParams.get('categories')?.toString().includes(category)
+
+    // We init checked as !startingValue because, for some weird 
+    // probably js-related reason, the first time you
+    // call setChecked(!checked) it actually sets the 
+    // value to checked, NOT to !checked.
+    const [checked, setChecked] = useState(!startingValue);
 
     function handleChange() {
         console.log("Checked (" + category + ") = " + checked)
@@ -26,6 +28,7 @@ export default function CategoryCheckbox({
 
         const params = new URLSearchParams(searchParams);
         const categories = params.get("categories")
+        const page = params.get("page")
 
         if(checked) {
             let final = ''
@@ -52,6 +55,18 @@ export default function CategoryCheckbox({
                 } else {
                     params.set('categories', newCategories)
                 }
+
+                //In addition, when we remove a category
+                //We want to make sure that the pagination
+                //doesn't leave us in an awkward spot. For
+                //example: if with 2 categories ticked, we've
+                //got 7 items, and we're on page 2 when we de-
+                //tick one of them, and that leaves us with 2
+                //items, page 2 will show 0 results, when in fact
+                //there are results.
+                if(page) {
+                    params.set('page', '1')
+                }
             }
         }
 
@@ -63,7 +78,7 @@ export default function CategoryCheckbox({
             <p className="text-md text-slate-700 font-bold">{text}</p>
             <input 
                 type="checkbox" 
-                defaultChecked={searchParams.get('categories')?.toString().includes(category)}
+                defaultChecked={startingValue}
                 onChange={(e) => handleChange()}
             />
         </label>
