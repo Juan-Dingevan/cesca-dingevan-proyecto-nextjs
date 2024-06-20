@@ -3,6 +3,12 @@
 import { useCartStore } from "@/app/lib/useCartStore";
 import React, { useEffect } from 'react'
 import Link from "next/link";
+import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'Éxito | La Ventanita',
+};
+
 
 export default function PagoExitoso() {
     const limpiarCarrito = useCartStore(state => state.reset)

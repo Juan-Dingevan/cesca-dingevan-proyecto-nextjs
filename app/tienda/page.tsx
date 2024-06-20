@@ -1,8 +1,12 @@
 import ShopNavBar from '../components/shop/navigation/ShopNavBar';
 import ProductDisplay from '../components/shop/ProductDisplay';
-import ShoppingCartDisplay from '../components/cart/ShoppingCartDisplay';
+import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'Tienda | La Ventanita',
+};
 
-export default async function TestPage({
+export default async function ShopPage({
     searchParams,
   }: {
     searchParams?: {

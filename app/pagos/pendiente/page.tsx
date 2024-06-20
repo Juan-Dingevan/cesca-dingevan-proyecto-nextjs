@@ -1,5 +1,11 @@
 import React from 'react'
 import Link from "next/link";
+import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'Pendiente... | La Ventanita',
+};
+
 
 export default function PagoError() {
     return (

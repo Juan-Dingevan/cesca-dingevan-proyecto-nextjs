@@ -1,8 +1,12 @@
-"use client"
-
 import CartDetails from '@/app/components/cart/CartDetails'
 import ShoppingCartDisplay from '@/app/components/cart/ShoppingCartDisplay'
 import React from 'react'
+import { Metadata } from 'next';
+ 
+export const metadata: Metadata = {
+  title: 'Carrito | La Ventanita',
+};
+
 
 const CarritoPage = () => {
   return (
