@@ -105,8 +105,8 @@ export default function EditProductForm({
         </label>
       </div>
 
-      <div className="input-data boolean flex justify-between p-2">
-        <span className='text-lg'>Vegan</span>
+      <div className="input-data boolean flex flex-row gap-2 p-2">
+        <span className='text-lg'>Plant Based</span>
         <input 
           id="vegan"
           name="vegan"
@@ -116,7 +116,7 @@ export default function EditProductForm({
         />
       </div>
 
-      <div className="input-data boolean flex justify-between p-2">
+      <div className="input-data boolean flex flex-row gap-2 p-2">
         <span className='text-lg'>Gluten Free</span>
         <input 
           id="gluten_free" 
