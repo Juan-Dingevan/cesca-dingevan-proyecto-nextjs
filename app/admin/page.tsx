@@ -8,8 +8,9 @@ import ProductsTable from '@/app/components/abm/Table';
 import Pagination from '@/app/components/abm/Pagination';
 import { fetchProductsPages } from '@/app/lib/data';
 import { signOut } from '@/auth';
-import { PowerIcon } from '@heroicons/react/24/solid';
+import { HomeIcon, PowerIcon } from '@heroicons/react/24/solid';
 import { Metadata } from 'next';
+import Link from 'next/link';
  
 export const metadata: Metadata = {
   title: 'Admin | La Ventanita',
@@ -29,7 +30,7 @@ export default async function AdminPage({
   const currentPage = Number(searchParams?.page) || 1;
   const totalPages = await fetchProductsPages(query);
   return (
-    <div className="w-full">
+    <div className="w-full p">
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Productos</h1>
       </div>
@@ -41,7 +42,7 @@ export default async function AdminPage({
         <ProductsTable query={query} currentPage={currentPage} />
         </Suspense> }
         <div className="mt-5 flex w-full justify-center">
-         <Pagination totalPages={totalPages} /> *
+         <Pagination totalPages={totalPages} />
       </div>
 
       <form
@@ -50,11 +51,17 @@ export default async function AdminPage({
             await signOut();
           }}
         >
-          <button className="flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+          <button className="flex h-[45px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-2 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
             <PowerIcon className="w-6" />
             <div className="hidden md:block">Sign Out</div>
           </button>
         </form>
+
+
+        <Link href="/" className="flex h-[45px] max-w-[120px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-2 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+          <HomeIcon className="w-6" />
+          <div className="hidden md:block">Inicio</div>
+        </Link>
 
     </div>
   
